@@ -1,3 +1,4 @@
+import AIAssistant from './AIAssistant';
 import { 
   Inbox, CheckSquare, List, CheckCircle2, Clock, Calendar, 
   Target, Folder, Activity, PieChart, Star, Search, User, ChevronDown
@@ -117,15 +118,18 @@ const DashboardLayout = ({ children }) => {
           <h1 className="text-lg font-semibold text-gray-800 capitalize">
             {location.pathname === '/' ? 'Today' : location.pathname.substring(1).replace('-', ' ')}
           </h1>
-          <button className="bg-blue-600 text-white px-4 py-1.5 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors">
+          <Link to="/" className="bg-blue-600 text-white px-4 py-1.5 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors">
             + New Task
-          </button>
+          </Link>
         </header>
         
         <div className="flex-1 overflow-auto p-6 bg-white">
           {children}
         </div>
       </main>
+
+      {/* Floating AI Assistant available across all routes */}
+      <AIAssistant />
 
     </div>
   );
