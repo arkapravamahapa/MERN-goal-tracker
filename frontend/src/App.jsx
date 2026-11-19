@@ -19,6 +19,7 @@ const API_URL = '/api/goals/';
 
 function App() {
   const [goals, setGoals] = useState([]);
+  const [apiError, setApiError] = useState('');
 
   useEffect(() => {
     const fetchGoals = async () => {
@@ -34,11 +35,12 @@ function App() {
 
   const addGoal = async (goalData) => {
     try {
+      setApiError('');
       const response = await axios.post(API_URL, goalData);
       setGoals([...goals, response.data]);
     } catch (error) {
       console.error('Error adding goal:', error);
-      alert('Error adding goal');
+      setApiError('Unable to save goal. Please try again.');
     }
   };
 
@@ -63,6 +65,17 @@ function App() {
   return (
     <Router>
       <DashboardLayout>
+        {apiError && (
+          <div className="mb-4 flex items-center justify-between rounded-lg border border-rose-200 bg-rose-50 px-4 py-2.5 text-sm text-rose-700">
+            <span>{apiError}</span>
+            <button
+              onClick={() => setApiError('')}
+              className="text-xs font-medium text-rose-600 hover:text-rose-800"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
         <Routes>
           {/* Core Task Views (Reusing TodayPage with different filters) */}
           <Route path="/" element={
