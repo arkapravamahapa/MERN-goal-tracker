@@ -3,7 +3,9 @@ import { CheckCircle2, Circle, Clock, Flame, LayoutList, Trash2 } from 'lucide-r
 import GoalForm from './GoalForm';
 
 const TodayPage = ({ goals, addGoal, deleteGoal, toggleGoal, defaultFilter = 'Active' }) => {
-  const [filter, setFilter] = useState(defaultFilter);
+  const [filterState, setFilterState] = useState({ route: defaultFilter, value: defaultFilter });
+  const filter = filterState.route === defaultFilter ? filterState.value : defaultFilter;
+  const setFilter = (value) => setFilterState({ route: defaultFilter, value });
 
   // Filter logic
   const filteredGoals = goals.filter(goal => {
@@ -13,13 +15,17 @@ const TodayPage = ({ goals, addGoal, deleteGoal, toggleGoal, defaultFilter = 'Ac
   });
 
   // Calculate quick stats
-  // ... KEEP THE REST OF YOUR COMPONENT EXACTLY THE SAME ...
- 
-
-  // Calculate quick stats
   const activeCount = goals.filter(g => !g.completed).length;
   const completedCount = goals.filter(g => g.completed).length;
   const completionRate = goals.length === 0 ? 0 : Math.round((completedCount / goals.length) * 100);
+
+  // Dynamic list title based on active route
+  const listTitle =
+    defaultFilter === 'Completed'
+      ? 'Completed Archive'
+      : defaultFilter === 'All'
+      ? 'All Workspace Tasks'
+      : 'Current Action Items';
 
   // Category Colors
   const getBadgeColor = (category) => {
@@ -34,22 +40,24 @@ const TodayPage = ({ goals, addGoal, deleteGoal, toggleGoal, defaultFilter = 'Ac
   return (
     <div className="flex flex-col lg:flex-row gap-6">
       
-      {/* LEFT COLUMN: Main Task Area (Takes up 2/3 of space) */}
+      {/* LEFT COLUMN: Main Task Area */}
       <div className="flex-1 space-y-6">
         
-        {/* Creation Form */}
-        <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
-          <h2 className="text-base font-semibold mb-4 text-gray-800 flex items-center gap-2">
-            <LayoutList size={18} className="text-blue-600"/> Create New Task
-          </h2>
-          <GoalForm addGoal={addGoal} />
-        </div>
+        {/* Creation Form (Hidden on Completed page for a cleaner archive view) */}
+        {defaultFilter !== 'Completed' && (
+          <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
+            <h2 className="text-base font-semibold mb-4 text-gray-800 flex items-center gap-2">
+              <LayoutList size={18} className="text-blue-600"/> Create New Task
+            </h2>
+            <GoalForm addGoal={addGoal} />
+          </div>
+        )}
 
         {/* Task List Panel */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col h-[500px]">
+        <div className={`bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col ${defaultFilter === 'Completed' ? 'h-[650px]' : 'h-[500px]'}`}>
           {/* Panel Header & Filters */}
           <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50/50 rounded-t-lg">
-            <h2 className="text-base font-semibold text-gray-800">Current Action Items</h2>
+            <h2 className="text-base font-semibold text-gray-800">{listTitle}</h2>
             <div className="flex bg-gray-100 p-1 rounded-md text-xs font-medium">
               <button onClick={() => setFilter('All')} className={`px-3 py-1.5 rounded-md transition-all ${filter === 'All' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}>All</button>
               <button onClick={() => setFilter('Active')} className={`px-3 py-1.5 rounded-md transition-all ${filter === 'Active' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}>Active</button>
@@ -103,7 +111,7 @@ const TodayPage = ({ goals, addGoal, deleteGoal, toggleGoal, defaultFilter = 'Ac
         </div>
       </div>
 
-      {/* RIGHT COLUMN: Widgets (Takes up 1/3 of space) */}
+      {/* RIGHT COLUMN: Widgets */}
       <div className="w-full lg:w-80 flex flex-col gap-6">
         
         {/* Productivity Widget */}
