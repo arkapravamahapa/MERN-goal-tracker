@@ -25,4 +25,13 @@ const userSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('User', userSchema);
+const createOfflineFallbackModel = require('../config/mockModel');
+
+const UserModel = mongoose.model('User', userSchema);
+
+module.exports = createOfflineFallbackModel(UserModel, {
+  defaults: {
+    role: 'Team Member',
+  },
+  seed: [],
+});

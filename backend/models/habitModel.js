@@ -20,4 +20,25 @@ const habitSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('Habit', habitSchema);
+const createOfflineFallbackModel = require('../config/mockModel');
+
+const HabitModel = mongoose.model('Habit', habitSchema);
+
+module.exports = createOfflineFallbackModel(HabitModel, {
+  defaults: {
+    streak: 0,
+    completedDates: [],
+  },
+  seed: [
+    {
+      name: 'Deep Work (90 mins)',
+      streak: 5,
+      completedDates: [],
+    },
+    {
+      name: 'Drink 2L of Water',
+      streak: 3,
+      completedDates: [],
+    },
+  ],
+});

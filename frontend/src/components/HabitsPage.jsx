@@ -2,13 +2,12 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Activity, Flame, Plus, Check, Trash2 } from 'lucide-react';
 
-const API_URL = 'http://localhost:5000/api/habits/';
+const API_URL = '/api/habits/';
 
 const HabitsPage = () => {
   const [habits, setHabits] = useState([]);
   const [newHabitName, setNewHabitName] = useState('');
 
-  // Today's date formatted as YYYY-MM-DD
   const todayStr = new Date().toISOString().split('T')[0];
 
   useEffect(() => {
@@ -25,9 +24,9 @@ const HabitsPage = () => {
 
   const addHabit = async (e) => {
     e.preventDefault();
-    if (!newHabitName) return;
+    if (!newHabitName.trim()) return;
     try {
-      const response = await axios.post(API_URL, { name: newHabitName });
+      const response = await axios.post(API_URL, { name: newHabitName.trim() });
       setHabits([...habits, response.data]);
       setNewHabitName('');
     } catch (error) {
@@ -41,17 +40,15 @@ const HabitsPage = () => {
     let newStreak = habit.streak;
 
     if (isDoneToday) {
-      // Uncheck it
       updatedDates = updatedDates.filter(date => date !== todayStr);
       newStreak = Math.max(0, newStreak - 1);
     } else {
-      // Check it in
       updatedDates.push(todayStr);
       newStreak += 1;
     }
 
     try {
-      const response = await axios.put(API_URL + habit._id, { 
+      const response = await axios.put(API_URL + habit._id, {
         completedDates: updatedDates,
         streak: newStreak
       });
@@ -71,25 +68,31 @@ const HabitsPage = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      
-      <div className="border-b border-gray-200 pb-4">
-        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <Activity className="text-blue-600" /> Daily Habits
+    <div className="max-w-4xl mx-auto space-y-6 pb-12">
+
+      <div className="border-b border-sky-100 pb-4">
+        <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2.5">
+          <span className="p-2 rounded-lg bg-emerald-100/80 text-emerald-600">
+            <Activity size={20} />
+          </span>
+          Daily Habits
         </h2>
-        <p className="text-gray-500 text-sm mt-1">Build streaks and track your daily routines.</p>
+        <p className="text-slate-500 text-sm mt-1">Build streaks and track your daily routines.</p>
       </div>
 
-      <div className="bg-white p-5 rounded-lg shadow-sm border border-gray-200">
-        <form onSubmit={addHabit} className="flex gap-4">
-          <input 
-            type="text" 
-            placeholder="e.g., Drink 2L of Water" 
+      <div className="bg-gradient-to-r from-emerald-50/60 via-white to-teal-50/50 p-5 rounded-xl border border-emerald-100">
+        <form onSubmit={addHabit} className="flex gap-3">
+          <input
+            type="text"
+            placeholder="e.g., Drink 2L of Water"
             value={newHabitName}
             onChange={(e) => setNewHabitName(e.target.value)}
-            className="flex-1 border border-gray-300 rounded p-2 text-sm outline-none focus:border-blue-500"
+            className="flex-1 bg-white border border-emerald-200/80 rounded-lg px-3.5 py-2 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 transition-all"
           />
-          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 flex items-center gap-1">
+          <button
+            type="submit"
+            className="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700 flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0"
+          >
             <Plus size={16} /> Add Habit
           </button>
         </form>
@@ -99,24 +102,38 @@ const HabitsPage = () => {
         {habits.map(habit => {
           const isDoneToday = habit.completedDates.includes(todayStr);
           return (
-            <div key={habit._id} className="bg-white p-5 rounded-lg shadow-sm border border-gray-100 flex items-center justify-between group">
+            <div
+              key={habit._id}
+              className={`p-5 rounded-xl border flex items-center justify-between group transition-colors ${
+                isDoneToday
+                  ? 'bg-gradient-to-br from-emerald-50/75 via-white to-teal-50/40 border-emerald-200/80'
+                  : 'bg-gradient-to-br from-white via-white to-amber-50/45 border-sky-100 hover:border-amber-200/80'
+              }`}
+            >
               <div>
-                <h3 className="text-gray-800 font-semibold">{habit.name}</h3>
-                <div className="flex items-center gap-1 text-orange-500 mt-1">
-                  <Flame size={16} /> 
-                  <span className="text-xs font-medium">{habit.streak} Day Streak</span>
+                <h3 className="text-slate-800 font-semibold">{habit.name}</h3>
+                <div className="flex items-center gap-1.5 text-amber-600 mt-1.5">
+                  <Flame size={15} />
+                  <span className="text-xs font-medium tabular-nums">{habit.streak} Day Streak</span>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <button 
+                <button
                   onClick={() => toggleCheckIn(habit)}
                   className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-                    isDoneToday ? 'bg-green-500 text-white shadow-md' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
+                    isDoneToday
+                      ? 'bg-emerald-500 text-white shadow-sm'
+                      : 'bg-sky-50 text-sky-400 hover:bg-emerald-50 hover:text-emerald-600 border border-sky-100'
                   }`}
+                  title={isDoneToday ? 'Checked in today' : 'Check in for today'}
                 >
                   <Check size={20} />
                 </button>
-                <button onClick={() => deleteHabit(habit._id)} className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 p-1">
+                <button
+                  onClick={() => deleteHabit(habit._id)}
+                  className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-rose-500 hover:bg-rose-50 p-1.5 rounded-md transition-all"
+                  title="Delete habit"
+                >
                   <Trash2 size={16} />
                 </button>
               </div>

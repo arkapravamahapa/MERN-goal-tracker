@@ -7,12 +7,11 @@ const ReportsPage = () => {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    // Fetch data from both APIs simultaneously
     const fetchData = async () => {
       try {
         const [goalsRes, projectsRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/goals/'),
-          axios.get('http://localhost:5000/api/projects/')
+          axios.get('/api/goals/'),
+          axios.get('/api/projects/')
         ]);
         setGoals(goalsRes.data);
         setProjects(projectsRes.data);
@@ -23,12 +22,10 @@ const ReportsPage = () => {
     fetchData();
   }, []);
 
-  // Calculate Metrics
   const totalGoals = goals.length;
   const completedGoals = goals.filter(g => g.completed).length;
   const completionRate = totalGoals === 0 ? 0 : Math.round((completedGoals / totalGoals) * 100);
 
-  // Calculate total timesheet hours
   const parseTime = (timeStr) => {
     if (!timeStr) return 0;
     if (timeStr.includes(':')) {
@@ -45,52 +42,52 @@ const ReportsPage = () => {
 
   return (
     <div className="space-y-6">
-      
+
       {/* Metric Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex items-center gap-4">
-          <div className="p-3 bg-blue-100 text-blue-600 rounded-full">
+
+        <div className="bg-gradient-to-br from-sky-50/80 to-white p-6 rounded-xl border border-sky-100 flex items-center gap-4">
+          <div className="p-3 bg-sky-100 text-sky-600 rounded-full">
             <Target size={24} />
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500">Total Active Goals</p>
-            <h3 className="text-2xl font-bold text-gray-900">{totalGoals}</h3>
+            <p className="text-sm font-medium text-sky-700">Total Active Goals</p>
+            <h3 className="text-2xl font-bold text-slate-900 tabular-nums">{totalGoals}</h3>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex items-center gap-4">
-          <div className="p-3 bg-green-100 text-green-600 rounded-full">
+        <div className="bg-gradient-to-br from-emerald-50/80 to-white p-6 rounded-xl border border-emerald-100 flex items-center gap-4">
+          <div className="p-3 bg-emerald-100 text-emerald-600 rounded-full">
             <CheckCircle size={24} />
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500">Goal Completion Rate</p>
-            <h3 className="text-2xl font-bold text-gray-900">{completionRate}%</h3>
+            <p className="text-sm font-medium text-emerald-700">Goal Completion Rate</p>
+            <h3 className="text-2xl font-bold text-slate-900 tabular-nums">{completionRate}%</h3>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex items-center gap-4">
-          <div className="p-3 bg-purple-100 text-purple-600 rounded-full">
+        <div className="bg-gradient-to-br from-violet-50/80 to-white p-6 rounded-xl border border-violet-100 flex items-center gap-4">
+          <div className="p-3 bg-violet-100 text-violet-600 rounded-full">
             <Clock size={24} />
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500">Total Hours Logged</p>
-            <h3 className="text-2xl font-bold text-gray-900">{Math.round(totalHoursLogged)}h</h3>
+            <p className="text-sm font-medium text-violet-700">Total Hours Logged</p>
+            <h3 className="text-2xl font-bold text-slate-900 tabular-nums">{Math.round(totalHoursLogged)}h</h3>
           </div>
         </div>
       </div>
 
       {/* Progress Bars */}
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-        <h3 className="text-lg font-semibold mb-4 text-gray-800">Database Analytics Overview</h3>
-        
+      <div className="bg-white p-6 rounded-xl border border-sky-100">
+        <h3 className="text-lg font-semibold mb-4 text-slate-800">Analytics Overview</h3>
+
         <div className="mb-4">
-          <div className="flex justify-between text-sm mb-1">
-            <span className="font-medium text-gray-700">Overall Goal Progress</span>
-            <span className="text-gray-500">{completedGoals} / {totalGoals}</span>
+          <div className="flex justify-between text-sm mb-1.5">
+            <span className="font-medium text-slate-700">Overall Goal Progress</span>
+            <span className="text-slate-500 tabular-nums">{completedGoals} / {totalGoals}</span>
           </div>
-          <div className="w-full bg-gray-100 rounded-full h-2">
-            <div className="bg-blue-600 h-2 rounded-full transition-all duration-500" style={{ width: `${completionRate}%` }}></div>
+          <div className="w-full bg-sky-100/80 rounded-full h-2.5">
+            <div className="bg-sky-500 h-2.5 rounded-full transition-all duration-500" style={{ width: `${completionRate}%` }}></div>
           </div>
         </div>
 

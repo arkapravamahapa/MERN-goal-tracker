@@ -15,7 +15,7 @@ import TodayPage from './components/TodayPage';
 import TimelineChart from './components/TimelineChart';
 import TimesheetGrid from './components/TimesheetGrid';
 
-const API_URL = 'http://localhost:5000/api/goals/';
+const API_URL = '/api/goals/';
 
 function App() {
   const [goals, setGoals] = useState([]);

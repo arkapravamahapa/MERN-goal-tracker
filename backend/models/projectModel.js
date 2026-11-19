@@ -20,4 +20,25 @@ const projectSchema = mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('Project', projectSchema);
+const createOfflineFallbackModel = require('../config/mockModel');
+
+const ProjectModel = mongoose.model('Project', projectSchema);
+
+module.exports = createOfflineFallbackModel(ProjectModel, {
+  defaults: {
+    color: 'bg-blue-500',
+    hours: ['', '', '', '', '', '', ''],
+  },
+  seed: [
+    {
+      name: 'FocusFlow Platform',
+      color: 'bg-blue-500',
+      hours: ['4:00', '3:30', '5:00', '4:00', '2:30', '', ''],
+    },
+    {
+      name: 'Client Architecture Review',
+      color: 'bg-purple-500',
+      hours: ['2:00', '1:30', '', '2:00', '1:00', '', ''],
+    },
+  ],
+});

@@ -30,7 +30,7 @@ const AIAssistant = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/ai/chat', {
+      const response = await axios.post('/api/ai/chat', {
         message: query
       });
       setMessages([
@@ -41,7 +41,7 @@ const AIAssistant = () => {
       console.error('AI Chat Error:', error);
       setMessages([
         ...updatedMessages,
-        { role: 'ai', text: 'Sorry, I could not connect to the backend AI service. Make sure your Express server is running on port 5000.' }
+        { role: 'ai', text: 'Sorry, I could not connect to the backend AI service. Please try again in a moment.' }
       ]);
     } finally {
       setLoading(false);
@@ -58,25 +58,25 @@ const AIAssistant = () => {
       {/* Floating Action Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-3 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all font-medium text-sm"
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-white px-4 py-3 rounded-full shadow-md hover:shadow-lg transition-all font-medium text-sm whitespace-nowrap"
       >
-        <Sparkles size={18} />
+        <Sparkles size={17} />
         <span>Ask AI</span>
       </button>
 
       {/* Slide-Over Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-20 right-6 z-50 w-96 max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden h-[520px]">
-          
+        <div className="fixed bottom-20 right-6 z-50 w-96 max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-xl border border-sky-100 flex flex-col overflow-hidden h-[520px]">
+
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-3.5 flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          <div className="bg-gradient-to-r from-sky-500 to-indigo-500 text-white px-4 py-3.5 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                <Sparkles size={18} />
+                <Sparkles size={17} />
               </div>
               <div>
                 <h3 className="font-semibold text-sm">Workspace AI Copilot</h3>
-                <p className="text-[11px] text-blue-100">Connected to MongoDB Live Data</p>
+                <p className="text-[11px] text-sky-100">Connected to live workspace data</p>
               </div>
             </div>
             <button
@@ -88,7 +88,7 @@ const AIAssistant = () => {
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/70">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-sky-50/40 to-indigo-50/30 custom-scrollbar">
             {messages.map((msg, idx) => (
               <div
                 key={idx}
@@ -97,17 +97,17 @@ const AIAssistant = () => {
                 <div
                   className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
                     msg.role === 'ai'
-                      ? 'bg-indigo-100 text-indigo-600'
-                      : 'bg-blue-600 text-white'
+                      ? 'bg-sky-100 text-sky-700'
+                      : 'bg-sky-600 text-white'
                   }`}
                 >
                   {msg.role === 'ai' ? <Bot size={15} /> : <User size={15} />}
                 </div>
                 <div
-                  className={`px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed whitespace-pre-line max-w-[80%] shadow-sm ${
+                  className={`px-3.5 py-2.5 rounded-2xl text-xs leading-relaxed whitespace-pre-line max-w-[80%] ${
                     msg.role === 'ai'
-                      ? 'bg-white text-gray-800 border border-gray-100 rounded-tl-none'
-                      : 'bg-blue-600 text-white rounded-tr-none'
+                      ? 'bg-white text-slate-800 border border-sky-100 rounded-tl-none'
+                      : 'bg-sky-600 text-white rounded-tr-none'
                   }`}
                 >
                   {msg.text}
@@ -116,19 +116,19 @@ const AIAssistant = () => {
             ))}
 
             {loading && (
-              <div className="flex items-center gap-2 text-xs text-gray-400 pl-9">
-                <span className="animate-pulse">Analyzing your MongoDB collections...</span>
+              <div className="flex items-center gap-2 text-xs text-sky-600 pl-9">
+                <span>Analyzing your workspace...</span>
               </div>
             )}
           </div>
 
           {/* Quick Suggestion Chips */}
-          <div className="px-3 py-2 bg-white border-t border-gray-100 flex gap-1.5 overflow-x-auto no-scrollbar">
+          <div className="px-3 py-2 bg-white border-t border-sky-100 flex gap-1.5 overflow-x-auto">
             {quickPrompts.map((prompt) => (
               <button
                 key={prompt}
                 onClick={() => sendMessage(prompt)}
-                className="shrink-0 text-[11px] bg-gray-100 hover:bg-blue-50 hover:text-blue-600 text-gray-600 px-2.5 py-1 rounded-full transition-colors border border-gray-200/60"
+                className="shrink-0 text-[11px] bg-sky-50 hover:bg-sky-100 text-sky-700 px-2.5 py-1 rounded-lg transition-colors border border-sky-100 whitespace-nowrap"
               >
                 {prompt}
               </button>
@@ -136,18 +136,18 @@ const AIAssistant = () => {
           </div>
 
           {/* Input Bar */}
-          <form onSubmit={handleFormSubmit} className="p-3 bg-white border-t border-gray-200 flex items-center gap-2">
+          <form onSubmit={handleFormSubmit} className="p-3 bg-white border-t border-sky-100 flex items-center gap-2">
             <input
               type="text"
               placeholder="Ask about your goals, habits, or schedule..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="flex-1 text-xs bg-gray-100 border-none rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+              className="flex-1 text-xs bg-sky-50/50 border border-sky-100 rounded-lg px-3 py-2.5 text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-sky-200 focus:bg-white transition-all"
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="bg-blue-600 text-white p-2.5 rounded-lg hover:bg-blue-700 disabled:opacity-40 transition-colors"
+              className="bg-sky-600 text-white p-2.5 rounded-lg hover:bg-sky-700 disabled:opacity-40 transition-colors"
             >
               <Send size={15} />
             </button>

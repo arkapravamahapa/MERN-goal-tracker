@@ -1,0 +1,5 @@
+{
+  "name": "FocusFlow - Enterprise Productivity Dashboard",
+  "description": "Full-stack productivity and goal management dashboard integrating task management, Gantt timelines, weekly timesheets, habit streaks, analytics insights, and a workspace AI copilot.",
+  "requestFramePermissions": []
+}
